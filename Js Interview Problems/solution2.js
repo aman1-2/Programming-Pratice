@@ -46,3 +46,9 @@ function setCancellableTimeout2(callback, delay) {
         clearTimeout(timmerID);
     }
 }
+
+let g = setCancellableTimeout2(() => {
+    console.log("Print nhi hoga");
+}, 12000);
+
+g(); //If we will not call this then the callback passed inside the function will print its value.
