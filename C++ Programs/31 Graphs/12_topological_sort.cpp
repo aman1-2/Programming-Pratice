@@ -45,6 +45,7 @@ public:
             for(int neighbour: node) {
                 cout<<neighbour<<" ";
             }
+            cout<<endl;
         }
         return;
     }
