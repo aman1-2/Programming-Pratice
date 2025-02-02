@@ -9,25 +9,31 @@ class Graph {
     list<int>* l;
     bool isDirected;
 
-    void dfshelper(int sourceVertex, int parent, vector<int> &dt, vector<int> &low, vector<bool> &visited, int time) {
+    //Time complexity is O(v+e)
+    void dfshelper(int sourceVertex, int parent, vector<int> &dt, vector<int> &low, vector<bool> &visited, int time, vector<bool> &ap) {
         visited[sourceVertex] = true;
         dt[sourceVertex] = low[sourceVertex] = ++time;
+
+        int child = 0; //Here we are going to track the value of our children where in starting the valu of children is going to be equal to 0.
 
         list<int> node = this->l[sourceVertex];
         for(int neighbour: node) {
             //Case 1: When neighbour and parent are equal
-            if(neighbour == parent) continue;
-            else if(!visited[neighbour]) { //case 2: Not visited
-                this->dfshelper(neighbour, sourceVertex, dt, low, visited, time);
-                low[sourceVertex] = min(low[sourceVertex], low[neighbour]);
-                //now making a check for our bridge condition.
-                if(dt[sourceVertex] < low[neighbour]) {
-                    cout<<"Bridge: "<<sourceVertex<<"->"<<neighbour<<endl;
-                }
-            } else { //case 3: Already visited
+            if(neighbour == parent) continue; //if parent and neighbour are equal just ignore
+            else if(visited[neighbour]) { //case 2: Already visited
                 low[sourceVertex] = min(low[sourceVertex], dt[neighbour]);
+            } else { //case 3: Not visited
+                this->dfshelper(neighbour, sourceVertex, dt, low, visited, time, ap);
+                low[sourceVertex] = min(low[sourceVertex], low[neighbour]);
+                //now making a check for our Articulation Point condition.
+                if(parent != -1 && dt[sourceVertex] <= low[neighbour]) {
+                    ap[sourceVertex] = true;
+                }
+                child++;
             }
         }
+
+        if(parent == -1 && child > 1)   ap[sourceVertex] = true;
 
         return;
     }
@@ -57,7 +63,7 @@ public:
         return;
     }
 
-    void tarjanBridge() {
+    void articulationTarjan() {
         //Step 1: Created two array's of Discovery time and Lowest Discovery time.
         vector<int> dt(this->vertices); //Discovery time
         vector<int> low(this->vertices); //Lowest Discovery time
@@ -68,10 +74,20 @@ public:
         //Step 3: Create a Visited vector to track which nodes we have visited.
         vector<bool> visited(this->vertices, false);
 
-        //Step 4: We make a call for our dfs if the node is not visited.
+        //Step 4: To track the articulation points we create this vector so that it shouldn't happen that one node coming more than one time as AP.
+        vector<bool> ap(this->vertices  );
+
+        //Step 5: We make a call for our dfs if the node is not visited.
         for(int i=0; i<this->vertices; i++) {
             if(!visited[i]) {
-                this->dfshelper(i, -1, dt, low, visited, time);
+                this->dfshelper(i, -1, dt, low, visited, time, ap);
+            }
+        }
+
+        //Step 6: Printing all the articulation points
+        for(int i=0; i<this->vertices; i++) {
+            if(ap[i]) {
+                cout<<"Articulation Point: "<<i<<endl;
             }
         }
     }
@@ -91,10 +107,13 @@ int main() {
     graph.addEdge(3, 4);
     graph.addEdge(3, 5);
     graph.addEdge(4, 3);
-    graph.addEdge(4, 5);
-    graph.addEdge(5, 3);
-    graph.addEdge(5, 4);
 
-    graph.tarjanBridge();
+    graph.articulationTarjan();
+
+    // graph.addEdge(4, 5);
+    // graph.addEdge(5, 3);
+    // graph.addEdge(5, 4);
+
+    
     return 0;
 }
