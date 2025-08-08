@@ -42,6 +42,15 @@ int trap(int height[], int size){
         right_max_bar[i] = max(right_max_bar[i+1], height[i+1]);
     }
 
+    for(int ele: left_max_bar) {
+        cout<<ele<<" ";
+    }
+    cout<<endl;
+    for(int ele: right_max_bar) {
+        cout<<ele<<" ";
+    }
+    cout<<endl;
+
     int trap_water = 0;
     //Calculating the water getting traped for each bar.
     for(int i=0; i<size; i++){
