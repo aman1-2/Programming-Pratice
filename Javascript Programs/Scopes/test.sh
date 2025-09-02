@@ -1,0 +1,3 @@
+echo "Hii Aman"
+
+ls
