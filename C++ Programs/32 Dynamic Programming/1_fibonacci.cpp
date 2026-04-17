@@ -13,7 +13,7 @@ int fibonaaciDP(int n, vector<int> &dp) { // Time-Complexity : O(n)
     return dp[n] = fibonaaciDP(n-1, dp) + fibonaaciDP(n-2,dp); // Storing the answer.
 }
 
-int fibonacciTabulation(int n) {
+int fibonacciTabulation(int n) {// Time-Complexity : O(n)
     vector<int> dp(n+1);
 
     dp[0] = 0;
